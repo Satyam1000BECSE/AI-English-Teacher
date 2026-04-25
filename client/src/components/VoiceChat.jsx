@@ -55,45 +55,6 @@ const VoiceChat = ({ settings }) => {
     speechSynthesis.speak(utter);
   };
 
-  // const startListening = () => {
-  //   setListening(true);
-
-  //   const SpeechRecognition =
-  //     window.SpeechRecognition || window.webkitSpeechRecognition;
-
-  //   const recognition = new SpeechRecognition();
-  //   recognition.lang = "en-US";
-  //   recognition.start();
-
-  //   recognition.onresult = async (e) => {
-  //     const text = e.results[0][0].transcript;
-  //     setUserText(text);
-
-  //     const token = await getAccessTokenSilently();
-
-  //     const res = await getNextMessage(
-  //       {
-  //         userText: text,
-  //         ...settings,
-  //       },
-  //       token
-  //     );
-
-  //     setAiText(res.data.ai_speech);
-  //     setCaption(res.data.caption);
-  //     setFeedback(res.data.feedback);
-  //     setCorrection(res.data.correction);
-  //     setSuggestedReply(res.data.suggested_reply);
-
-  //     speak(res.data.ai_speech);
-  //     setListening(false);
-  //   };
-
-  //   recognition.onerror = () => {
-  //     setListening(false);
-  //   };
-  // };
-
   const startListening = () => {
   if (listening) return; // 🔥 prevent double click
   setListening(true);
