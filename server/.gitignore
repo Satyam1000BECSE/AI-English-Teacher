@@ -1,0 +1,26 @@
+# dependencies
+node_modules/
+
+# env files (VERY IMPORTANT)
+.env
+
+# logs
+logs
+*.log
+npm-debug.log*
+
+# runtime
+pids
+*.pid
+*.seed
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# editor
+.vscode/
+.idea/
+
+# uploads (if any)
+uploads/
