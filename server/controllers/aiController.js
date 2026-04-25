@@ -52,7 +52,7 @@ Now generate response:
 
     console.log("RAW GEMINI RESPONSE:\n", aiText);
 
-    // ✅ Extract JSON safely
+    //  Extract JSON safely
     const extractJSON = (text) => {
       const match = text.match(/\{[\s\S]*\}/);
       return match ? match[0] : null;
@@ -65,7 +65,7 @@ Now generate response:
     try {
       parsed = JSON.parse(jsonString);
 
-      // 🔥 Ensure "Say:" format (extra safety)
+      // Ensure "Say:" format (extra safety)
       if (
         parsed.suggested_reply &&
         !parsed.suggested_reply.toLowerCase().startsWith("say:")
@@ -91,68 +91,3 @@ Now generate response:
   }
 };
 
-// import { callGemini } from "../services/geminiService.js";
-
-// export const nextMessage = async (req, res) => {
-//     try {
-//         const { userText, level, accent, topic } = req.body;
-
-//         const prompt = `
-// You are a professional English speaking teacher.
-
-// IMPORTANT:
-// - Return ONLY JSON
-// - Do NOT add explanation
-// - Do NOT add text before or after JSON
-// - Do NOT use markdown
-// - Output must start with { and end with }
-
-// Format:
-// {
-//   "ai_speech": "string",
-//   "caption": "string",
-//   "suggested_reply": "string",
-//   "correction": "string",
-//   "feedback": "string",
-//   "next_question": "string"
-// }
-
-// Context:
-// Level: ${level}
-// Accent: ${accent}
-// Topic: ${topic}
-
-// User said: "${userText}"
-// `;
-
-//         const aiText = await callGemini(prompt);
-
-//         console.log("RAW GEMINI RESPONSE:\n", aiText);
-
-//         const extractJSON = (text) => {
-//             const match = text.match(/\{[\s\S]*\}/);
-//             return match ? match[0] : null;
-//         };
-
-//         const jsonString = extractJSON(aiText);
-
-//         let parsed;
-
-//         try {
-//             parsed = JSON.parse(jsonString);
-//         } catch {
-//             parsed = {
-//                 ai_speech: "Let's continue. Can you try again?",
-//                 caption: "Let's continue. Can you try again?",
-//                 suggested_reply: "",
-//                 correction: "",
-//                 feedback: "Try speaking clearly.",
-//                 next_question: "What would you like to say?"
-//             };
-//         }
-
-//         res.json(parsed);
-//     } catch (err) {
-//         res.status(500).json({ error: err.message });
-//     }
-// };
