@@ -55,20 +55,73 @@ const VoiceChat = ({ settings }) => {
     speechSynthesis.speak(utter);
   };
 
+  // const startListening = () => {
+  //   setListening(true);
+
+  //   const SpeechRecognition =
+  //     window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  //   const recognition = new SpeechRecognition();
+  //   recognition.lang = "en-US";
+  //   recognition.start();
+
+  //   recognition.onresult = async (e) => {
+  //     const text = e.results[0][0].transcript;
+  //     setUserText(text);
+
+  //     const token = await getAccessTokenSilently();
+
+  //     const res = await getNextMessage(
+  //       {
+  //         userText: text,
+  //         ...settings,
+  //       },
+  //       token
+  //     );
+
+  //     setAiText(res.data.ai_speech);
+  //     setCaption(res.data.caption);
+  //     setFeedback(res.data.feedback);
+  //     setCorrection(res.data.correction);
+  //     setSuggestedReply(res.data.suggested_reply);
+
+  //     speak(res.data.ai_speech);
+  //     setListening(false);
+  //   };
+
+  //   recognition.onerror = () => {
+  //     setListening(false);
+  //   };
+  // };
+
   const startListening = () => {
-    setListening(true);
+  if (listening) return; // 🔥 prevent double click
+  setListening(true);
 
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
+  const SpeechRecognition =
+    window.SpeechRecognition || window.webkitSpeechRecognition;
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = "en-US";
-    recognition.start();
+  const recognition = new SpeechRecognition();
+  recognition.lang = "en-US";
+  recognition.interimResults = true; // 🔥 important
+  recognition.start();
 
-    recognition.onresult = async (e) => {
-      const text = e.results[0][0].transcript;
-      setUserText(text);
+  let isProcessing = false; // 🔥 lock
 
+  recognition.onresult = async (e) => {
+    const result = e.results[e.results.length - 1];
+
+    // ❌ ignore interim results
+    if (!result.isFinal) return;
+
+    // ❌ prevent multiple API calls
+    if (isProcessing) return;
+    isProcessing = true;
+
+    const text = result[0].transcript;
+    setUserText(text);
+
+    try {
       const token = await getAccessTokenSilently();
 
       const res = await getNextMessage(
@@ -86,14 +139,22 @@ const VoiceChat = ({ settings }) => {
       setSuggestedReply(res.data.suggested_reply);
 
       speak(res.data.ai_speech);
-      setListening(false);
-    };
+    } catch (err) {
+      console.error("API ERROR:", err);
+    }
 
-    recognition.onerror = () => {
-      setListening(false);
-    };
+    // 🔥 stop listening after one final result
+    recognition.stop();
+
+    isProcessing = false;
+    setListening(false);
   };
 
+  recognition.onerror = () => {
+    setListening(false);
+  };
+};
+  
   // 🔥 Clean "Say: ..." text for speaking
   const handleSuggestedClick = () => {
     if (!suggestedReply) return;
